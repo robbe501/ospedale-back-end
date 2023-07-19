@@ -18,4 +18,8 @@ public interface AppuntamentoService {
 
 	// PATCH Appuntamento (Cambio Stato)
 	public Appuntamento patch(AppuntamentoDTO appuntamento);
+
+	// GET AppuntamentiByCodiceFiscale
+	public List<Appuntamento> getByPazienteId(Integer pazienteId);
+
 }

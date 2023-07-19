@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.dto.AppuntamentoDTO;
 import com.entity.Appuntamento;
 import com.repository.AppuntamentoRepository;
+import com.repository.PazienteRepository;
 import com.repository.PrestazioneRepository;
 
 @Service
@@ -21,6 +22,9 @@ public class AppuntamentoServiceImpl implements AppuntamentoService {
 
 	@Autowired
 	PrestazioneRepository pr;
+
+	@Autowired
+	PazienteRepository pazienteRepo;
 
 	@Override
 	public List<Appuntamento> get() {
@@ -36,6 +40,7 @@ public class AppuntamentoServiceImpl implements AppuntamentoService {
 	public Appuntamento post(AppuntamentoDTO appuntamentoDTO) {
 		try {
 			Appuntamento a = toEntity(appuntamentoDTO);
+			a.setPaziente(pazienteRepo.findById(appuntamentoDTO.getPazienteId()).get());
 			ar.save(a);
 			return a;
 		} catch (NoSuchElementException e) {
@@ -66,5 +71,10 @@ public class AppuntamentoServiceImpl implements AppuntamentoService {
 		a.setOrario(appuntamentoDTO.getOrario());
 		a.setPrestazione(pr.findById(appuntamentoDTO.getPrestazioneId()).get());
 		return a;
+	}
+
+	@Override
+	public List<Appuntamento> getByPazienteId(Integer pazienteId) {
+		return ar.findByPaziente(pazienteRepo.findById(pazienteId).get());
 	}
 }

@@ -27,4 +27,5 @@ public class AppuntamentoDTO {
 	private LocalDate data;
 	private Time orario;
 	private Integer prestazioneId;
+	private Integer pazienteId;
 }

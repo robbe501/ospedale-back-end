@@ -40,4 +40,8 @@ public class Appuntamento {
 	@ManyToOne
 	@JoinColumn(name = "prestazione_id")
 	private Prestazione prestazione;
+
+	@ManyToOne
+	@JoinColumn(name = "paziente_id")
+	private Paziente paziente;
 }

@@ -35,6 +35,11 @@ public class AppuntamentoController {
 		return as.getByData(data);
 	}
 
+	@GetMapping("/appuntamenti/paziente/{pazienteId}")
+	public List<Appuntamento> getByCodiceFiscale(@PathVariable Integer pazienteId) {
+		return as.getByPazienteId(pazienteId);
+	}
+
 	@PostMapping("/appuntamenti")
 	public Appuntamento post(@RequestBody AppuntamentoDTO appuntamento) {
 		return as.post(appuntamento);
