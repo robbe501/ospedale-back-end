@@ -3,6 +3,7 @@ package com.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,22 +27,22 @@ public class MedicoController {
 	MedicoService ms;
 
 	@GetMapping("/medici")
-	public List<Medico> get() {
+	public ResponseEntity<List<Medico>> get() {
 		return ms.get();
 	}
 
 	@PostMapping("/medici")
-	public Medico post(@RequestBody MedicoDTO medico) {
+	public ResponseEntity<Medico> post(@RequestBody MedicoDTO medico) {
 		return ms.post(medico);
 	}
 
 	@PatchMapping("/medici")
-	public Medico patch(@RequestBody MedicoDTO medico) {
+	public ResponseEntity<Medico> patch(@RequestBody MedicoDTO medico) {
 		return ms.patch(medico);
 	}
 
 	@DeleteMapping("/medici/{medicoId}")
-	public void patch(@PathVariable Integer medicoId) {
-		ms.delete(medicoId);
+	public ResponseEntity<String> patch(@PathVariable Integer medicoId) {
+		return ms.delete(medicoId);
 	}
 }

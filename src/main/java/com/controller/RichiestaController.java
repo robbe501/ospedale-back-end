@@ -3,6 +3,7 @@ package com.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -24,17 +25,18 @@ public class RichiestaController {
 	private RichiestaService rs;
 
 	@GetMapping("/richieste")
-	public List<Richiesta> get() {
+	public ResponseEntity<List<Richiesta>> get() {
 		return rs.get();
 	}
 
 	@PostMapping("/richieste")
-	public Richiesta post(@RequestBody RichiestaDTO richiestaDTO) {
+	public ResponseEntity<Richiesta> post(@RequestBody RichiestaDTO richiestaDTO) {
+		System.out.println(richiestaDTO);
 		return rs.post(richiestaDTO);
 	}
 
 	@PatchMapping("/richieste")
-	public Richiesta patch(@RequestBody RichiestaDTO richiestaDTO) {
+	public ResponseEntity<Richiesta> patch(@RequestBody RichiestaDTO richiestaDTO) {
 		return rs.patch(richiestaDTO);
 	}
 }

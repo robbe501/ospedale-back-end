@@ -5,6 +5,8 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.dto.PrestazioneDTO;
@@ -22,33 +24,37 @@ public class PrestazioneServiceImpl implements PrestazioneService {
 	private MedicoRepository mr;
 
 	@Override
-	public List<Prestazione> get() {
-		return pr.findAll();
+	public ResponseEntity<List<Prestazione>> get() {
+		return new ResponseEntity<>(pr.findAll(), HttpStatus.OK);
 	}
 
 	@Override
-	public Prestazione post(PrestazioneDTO prestazioneDTO) {
+	public ResponseEntity<Prestazione> post(PrestazioneDTO prestazioneDTO) {
 		try {
 			Prestazione prestazione = toEntity(prestazioneDTO);
 			prestazione.setMedico(mr.findById(prestazioneDTO.getMedicoId()).get());
-			return pr.save(prestazione);
+			return new ResponseEntity<>(pr.save(prestazione), HttpStatus.CREATED);
 		} catch (NoSuchElementException e) {
-			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+
 		}
-		return null;
+		return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@Override
-	public Prestazione patch(PrestazioneDTO prestazioneDTO) {
+	public ResponseEntity<Prestazione> patch(PrestazioneDTO prestazioneDTO) {
 		try {
 			Optional<Prestazione> p = pr.findById(prestazioneDTO.getPrestazioneId());
 			p.get().setMedico(mr.findById(prestazioneDTO.getMedicoId()).get());
 			pr.save(p.get());
-			return p.get();
+			return new ResponseEntity<>(p.get(), HttpStatus.OK);
 		} catch (NoSuchElementException e) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	private Prestazione toEntity(PrestazioneDTO prestazioneDTO) {

@@ -6,6 +6,8 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.dto.AppuntamentoDTO;
@@ -27,39 +29,48 @@ public class AppuntamentoServiceImpl implements AppuntamentoService {
 	PazienteRepository pazienteRepo;
 
 	@Override
-	public List<Appuntamento> get() {
-		return ar.findAll();
+	public ResponseEntity<List<Appuntamento>> get() {
+		return new ResponseEntity<>(ar.findAll(), HttpStatus.OK);
 	}
 
 	@Override
-	public List<Appuntamento> getByData(LocalDate data) {
-		return ar.findByData(data);
+	public ResponseEntity<List<Appuntamento>> getByData(LocalDate data) {
+		return new ResponseEntity<>(ar.findByData(data), HttpStatus.OK);
 	}
 
 	@Override
-	public Appuntamento post(AppuntamentoDTO appuntamentoDTO) {
+	public ResponseEntity<Appuntamento> post(AppuntamentoDTO appuntamentoDTO) {
 		try {
 			Appuntamento a = toEntity(appuntamentoDTO);
 			a.setPaziente(pazienteRepo.findById(appuntamentoDTO.getPazienteId()).get());
 			ar.save(a);
-			return a;
-		} catch (NoSuchElementException e) {
+			return new ResponseEntity<>(a, HttpStatus.CREATED);
+		} catch (NoSuchElementException | IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 	}
 
 	@Override
-	public Appuntamento patch(AppuntamentoDTO appuntamento) {
+	public ResponseEntity<Appuntamento> patch(AppuntamentoDTO appuntamento) {
 		Optional<Appuntamento> a = ar.findById(appuntamento.getAppuntamentoId());
 		try {
 			a.get().setStato(appuntamento.getStato());
 			ar.save(a.get());
-			return a.get();
+			return new ResponseEntity<>(a.get(), HttpStatus.OK);
 		} catch (NoSuchElementException e) {
 			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		return null;
+		return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+	}
+
+	@Override
+	public ResponseEntity<List<Appuntamento>> getByPazienteId(Integer pazienteId) {
+		return new ResponseEntity<>(ar.findByPaziente(pazienteRepo.findById(pazienteId).get()), HttpStatus.OK);
 	}
 
 	private Appuntamento toEntity(AppuntamentoDTO appuntamentoDTO) {
@@ -71,10 +82,5 @@ public class AppuntamentoServiceImpl implements AppuntamentoService {
 		a.setOrario(appuntamentoDTO.getOrario());
 		a.setPrestazione(pr.findById(appuntamentoDTO.getPrestazioneId()).get());
 		return a;
-	}
-
-	@Override
-	public List<Appuntamento> getByPazienteId(Integer pazienteId) {
-		return ar.findByPaziente(pazienteRepo.findById(pazienteId).get());
 	}
 }

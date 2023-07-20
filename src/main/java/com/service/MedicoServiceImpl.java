@@ -5,6 +5,8 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.dto.MedicoDTO;
@@ -18,33 +20,48 @@ public class MedicoServiceImpl implements MedicoService {
 	private MedicoRepository mr;
 
 	@Override
-	public List<Medico> get() {
-		return mr.findAll();
+	public ResponseEntity<List<Medico>> get() {
+		return new ResponseEntity<>(mr.findAll(), HttpStatus.OK);
 	}
 
 	@Override
-	public void delete(Integer medicoId) {
-		mr.deleteById(medicoId);
+	public ResponseEntity<String> delete(Integer medicoId) {
+		try {
+			mr.deleteById(medicoId);
+			return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+
+		}
+		return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 
 	}
 
 	@Override
-	public Medico post(MedicoDTO medicoDTO) {
+	public ResponseEntity<Medico> post(MedicoDTO medicoDTO) {
 		Medico medico = toEntity(medicoDTO);
-		return mr.save(medico);
+		try {
+			mr.save(medico);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<>(medico, HttpStatus.OK);
 	}
 
 	@Override
-	public Medico patch(MedicoDTO medico) {
+	public ResponseEntity<Medico> patch(MedicoDTO medico) {
 		Optional<Medico> m = mr.findById(medico.getMedicoId());
 		try {
 			m.get().setAbilitato(medico.isAbilitato());
 			mr.save(m.get());
-			return m.get();
-		} catch (NoSuchElementException e) {
-			e.printStackTrace();
+			return new ResponseEntity<>(m.get(), HttpStatus.OK);
+		} catch (NoSuchElementException | IllegalArgumentException e) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+
 		}
-		return null;
+		return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	private Medico toEntity(MedicoDTO medicoDTO) {

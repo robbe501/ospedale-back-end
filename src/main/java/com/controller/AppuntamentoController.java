@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -26,27 +27,27 @@ public class AppuntamentoController {
 	AppuntamentoService as;
 
 	@GetMapping("/appuntamenti")
-	public List<Appuntamento> get() {
+	public ResponseEntity<List<Appuntamento>> get() {
 		return as.get();
 	}
 
 	@GetMapping("/appuntamenti/{data}")
-	public List<Appuntamento> getByData(@PathVariable LocalDate data) {
+	public ResponseEntity<List<Appuntamento>> getByData(@PathVariable LocalDate data) {
 		return as.getByData(data);
 	}
 
 	@GetMapping("/appuntamenti/paziente/{pazienteId}")
-	public List<Appuntamento> getByCodiceFiscale(@PathVariable Integer pazienteId) {
+	public ResponseEntity<List<Appuntamento>> getByCodiceFiscale(@PathVariable Integer pazienteId) {
 		return as.getByPazienteId(pazienteId);
 	}
 
 	@PostMapping("/appuntamenti")
-	public Appuntamento post(@RequestBody AppuntamentoDTO appuntamento) {
+	public ResponseEntity<Appuntamento> post(@RequestBody AppuntamentoDTO appuntamento) {
 		return as.post(appuntamento);
 	}
 
 	@PatchMapping("/appuntamenti")
-	public Appuntamento patch(@RequestBody AppuntamentoDTO appuntamento) {
+	public ResponseEntity<Appuntamento> patch(@RequestBody AppuntamentoDTO appuntamento) {
 		return as.patch(appuntamento);
 	}
 }

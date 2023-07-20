@@ -5,6 +5,8 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.dto.RichiestaDTO;
@@ -31,17 +33,20 @@ public class RichiestaServiceImpl implements RichiestaService {
 	private PazienteRepository pr;
 
 	@Override
-	public Richiesta post(RichiestaDTO richiestaDTO) {
+	public ResponseEntity<Richiesta> post(RichiestaDTO richiestaDTO) {
 		Richiesta richiesta = toEntity(richiestaDTO);
 		try {
 			richiesta.setAppuntamento(ar.findById(richiestaDTO.getAppuntamentoId()).get());
 			richiesta.setMedico(mr.findById(richiestaDTO.getMedicoId()).get());
 			richiesta.setPaziente(pr.findById(richiestaDTO.getPazienteId()).get());
-			return rr.save(richiesta);
+			return new ResponseEntity<>(rr.save(richiesta), HttpStatus.CREATED);
 		} catch (NoSuchElementException e) {
 			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		return null;
+		return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	// Può gestire le richieste di cambio data/orario fatte dai pazienti o
@@ -49,7 +54,7 @@ public class RichiestaServiceImpl implements RichiestaService {
 	// paziente e al medico(entrambi in entrambi i casi).
 
 	@Override
-	public Richiesta patch(RichiestaDTO richiestaDTO) {
+	public ResponseEntity<Richiesta> patch(RichiestaDTO richiestaDTO) {
 		try {
 			Optional<Richiesta> r = rr.findById(richiestaDTO.getRichiestaId());
 			r.get().setStato(richiestaDTO.getStato());
@@ -61,11 +66,13 @@ public class RichiestaServiceImpl implements RichiestaService {
 			}
 			rr.save(r.get());
 			// TODO INVIO EMAIL
-			return r.get();
+			return new ResponseEntity<>(r.get(), HttpStatus.OK);
 		} catch (NoSuchElementException e) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	private Richiesta toEntity(RichiestaDTO richiestaDTO) {
@@ -73,12 +80,12 @@ public class RichiestaServiceImpl implements RichiestaService {
 		r.setNuovaData(richiestaDTO.getNuovaData());
 		r.setNuovoOrario(richiestaDTO.getNuovoOrario());
 		r.setStato("attesa");
-		return null;
+		return r;
 	}
 
 	@Override
-	public List<Richiesta> get() {
-		return rr.findAll();
+	public ResponseEntity<List<Richiesta>> get() {
+		return new ResponseEntity<>(rr.findAll(), HttpStatus.OK);
 	}
 
 }
