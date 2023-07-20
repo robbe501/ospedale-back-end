@@ -85,7 +85,41 @@ public class RichiestaServiceImpl implements RichiestaService {
 
 	@Override
 	public ResponseEntity<List<Richiesta>> get() {
-		return new ResponseEntity<>(rr.findAll(), HttpStatus.OK);
+		try {
+			return new ResponseEntity<>(rr.findAll(), HttpStatus.OK);
+		} catch (NoSuchElementException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	@Override
+	public ResponseEntity<List<Richiesta>> getByPazienteId(Integer pazienteId) {
+		try {
+			return new ResponseEntity<>(rr.findByPaziente(pr.findById(pazienteId).get()), HttpStatus.OK);
+		} catch (NoSuchElementException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	@Override
+	public ResponseEntity<List<Richiesta>> getByMedicoId(Integer medicoId) {
+		try {
+			return new ResponseEntity<>(rr.findByMedico(mr.findById(medicoId).get()), HttpStatus.OK);
+		} catch (NoSuchElementException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 }

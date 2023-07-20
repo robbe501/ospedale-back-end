@@ -41,6 +41,11 @@ public class AppuntamentoController {
 		return as.getByPazienteId(pazienteId);
 	}
 
+	@GetMapping("/appuntamenti/medico/{medicoId}")
+	public ResponseEntity<List<Appuntamento>> getByMedicoId(@PathVariable Integer medicoId) {
+		return as.getByMedicoId(medicoId);
+	}
+
 	@PostMapping("/appuntamenti")
 	public ResponseEntity<Appuntamento> post(@RequestBody AppuntamentoDTO appuntamento) {
 		return as.post(appuntamento);

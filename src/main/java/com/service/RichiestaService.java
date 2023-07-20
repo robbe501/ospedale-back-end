@@ -12,6 +12,11 @@ public interface RichiestaService {
 	// GET Richieste
 	public ResponseEntity<List<Richiesta>> get();
 
+	// GET RichiesteByPazienteId
+	public ResponseEntity<List<Richiesta>> getByPazienteId(Integer pazienteId);
+
+	public ResponseEntity<List<Richiesta>> getByMedicoId(Integer medicoId);
+
 	// POST Richiesta
 	public ResponseEntity<Richiesta> post(RichiestaDTO richiestaDTO);
 

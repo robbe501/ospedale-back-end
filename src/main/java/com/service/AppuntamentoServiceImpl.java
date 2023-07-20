@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.dto.AppuntamentoDTO;
 import com.entity.Appuntamento;
 import com.repository.AppuntamentoRepository;
+import com.repository.MedicoRepository;
 import com.repository.PazienteRepository;
 import com.repository.PrestazioneRepository;
 
@@ -27,6 +28,9 @@ public class AppuntamentoServiceImpl implements AppuntamentoService {
 
 	@Autowired
 	PazienteRepository pazienteRepo;
+
+	@Autowired
+	MedicoRepository mr;
 
 	@Override
 	public ResponseEntity<List<Appuntamento>> get() {
@@ -70,7 +74,29 @@ public class AppuntamentoServiceImpl implements AppuntamentoService {
 
 	@Override
 	public ResponseEntity<List<Appuntamento>> getByPazienteId(Integer pazienteId) {
-		return new ResponseEntity<>(ar.findByPaziente(pazienteRepo.findById(pazienteId).get()), HttpStatus.OK);
+		try {
+			return new ResponseEntity<>(ar.findByPaziente(pazienteRepo.findById(pazienteId).get()), HttpStatus.OK);
+		} catch (NoSuchElementException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+
+	}
+
+	@Override
+	public ResponseEntity<List<Appuntamento>> getByMedicoId(Integer medicoId) {
+		try {
+			return new ResponseEntity<>(ar.findByMedico(mr.findById(medicoId).get()), HttpStatus.OK);
+		} catch (NoSuchElementException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	private Appuntamento toEntity(AppuntamentoDTO appuntamentoDTO) {
@@ -83,4 +109,5 @@ public class AppuntamentoServiceImpl implements AppuntamentoService {
 		a.setPrestazione(pr.findById(appuntamentoDTO.getPrestazioneId()).get());
 		return a;
 	}
+
 }

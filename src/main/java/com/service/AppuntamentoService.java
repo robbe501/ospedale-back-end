@@ -24,4 +24,6 @@ public interface AppuntamentoService {
 	// GET AppuntamentiByCodiceFiscale
 	public ResponseEntity<List<Appuntamento>> getByPazienteId(Integer pazienteId);
 
+	public ResponseEntity<List<Appuntamento>> getByMedicoId(Integer medicoId);
+
 }
