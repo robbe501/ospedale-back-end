@@ -37,13 +37,13 @@ public class Richiesta {
 	@Column(name = "nuovo_orario")
 	private Time nuovoOrario;
 
-	@ManyToOne
-	@JoinColumn(name = "paziente_id")
-	private Paziente paziente;
-
-	@ManyToOne
-	@JoinColumn(name = "medico_id")
-	private Medico medico;
+//	@ManyToOne
+//	@JoinColumn(name = "paziente_id")
+//	private Paziente paziente;
+//
+//	@ManyToOne
+//	@JoinColumn(name = "medico_id")
+//	private Medico medico;
 
 	@ManyToOne
 	@JoinColumn(name = "appuntamento_id")

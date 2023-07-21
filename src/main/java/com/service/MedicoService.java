@@ -21,4 +21,6 @@ public interface MedicoService {
 	// PATCH Medico (Cambio abilitato)
 	public ResponseEntity<Medico> patch(MedicoDTO medicoDTO);
 
+	public ResponseEntity<List<Medico>> getByAbilitato(Boolean abilitato);
+
 }

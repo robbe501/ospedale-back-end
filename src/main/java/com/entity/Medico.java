@@ -28,6 +28,8 @@ public class Medico {
 	private String nome;
 	private String cognome;
 	private String email;
+
+	@Column(nullable = false, columnDefinition = "TINYINT(1)")
 	private boolean abilitato;
 
 }

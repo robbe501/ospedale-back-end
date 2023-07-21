@@ -73,4 +73,16 @@ public class MedicoServiceImpl implements MedicoService {
 		return m;
 	}
 
+	@Override
+	public ResponseEntity<List<Medico>> getByAbilitato(Boolean abilitato) {
+		try {
+			return new ResponseEntity<>(mr.getByAbilitato(abilitato), HttpStatus.OK);
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+
+		}
+		return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
 }

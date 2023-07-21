@@ -37,8 +37,8 @@ public class RichiestaServiceImpl implements RichiestaService {
 		Richiesta richiesta = toEntity(richiestaDTO);
 		try {
 			richiesta.setAppuntamento(ar.findById(richiestaDTO.getAppuntamentoId()).get());
-			richiesta.setMedico(mr.findById(richiestaDTO.getMedicoId()).get());
-			richiesta.setPaziente(pr.findById(richiestaDTO.getPazienteId()).get());
+//			richiesta.setMedico(mr.findById(richiestaDTO.getMedicoId()).get());
+//			richiesta.setPaziente(pr.findById(richiestaDTO.getPazienteId()).get());
 			return new ResponseEntity<>(rr.save(richiesta), HttpStatus.CREATED);
 		} catch (NoSuchElementException e) {
 			e.printStackTrace();

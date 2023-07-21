@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dto.MedicoDTO;
 import com.entity.Medico;
+import com.service.EmailService;
 import com.service.MedicoService;
 
 @CrossOrigin
@@ -26,9 +27,22 @@ public class MedicoController {
 	@Autowired
 	MedicoService ms;
 
+	@Autowired
+	EmailService emailService;
+
 	@GetMapping("/medici")
 	public ResponseEntity<List<Medico>> get() {
+		String recipientEmail = "robertograffeo00@gmail.com";
+		String subject = "cao";
+		String message = "message";
+
+		emailService.sendEmail(recipientEmail, subject, message);
 		return ms.get();
+	}
+
+	@GetMapping("/medici/abilitati")
+	public ResponseEntity<List<Medico>> getByAbilitato() {
+		return ms.getByAbilitato(true);
 	}
 
 	@PostMapping("/medici")
