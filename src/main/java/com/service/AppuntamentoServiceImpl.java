@@ -44,6 +44,7 @@ public class AppuntamentoServiceImpl implements AppuntamentoService {
 
 	@Override
 	public ResponseEntity<Appuntamento> post(AppuntamentoDTO appuntamentoDTO) {
+		System.out.println(appuntamentoDTO.toString());
 		try {
 			Appuntamento a = toEntity(appuntamentoDTO);
 			a.setPaziente(pazienteRepo.findById(appuntamentoDTO.getPazienteId()).get());

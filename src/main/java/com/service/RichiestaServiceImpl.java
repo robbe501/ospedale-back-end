@@ -32,6 +32,9 @@ public class RichiestaServiceImpl implements RichiestaService {
 	@Autowired
 	private PazienteRepository pr;
 
+	@Autowired
+	EmailService emailService;
+
 	@Override
 	public ResponseEntity<Richiesta> post(RichiestaDTO richiestaDTO) {
 		Richiesta richiesta = toEntity(richiestaDTO);
@@ -58,14 +61,26 @@ public class RichiestaServiceImpl implements RichiestaService {
 		try {
 			Optional<Richiesta> r = rr.findById(richiestaDTO.getRichiestaId());
 			r.get().setStato(richiestaDTO.getStato());
-			if (richiestaDTO.getStato() == "accettata") {
+			if (richiestaDTO.getStato().equals("accettato")) {
+				System.out.println("ENTRATOOOOOOOOOOOO");
 				Appuntamento a = r.get().getAppuntamento();
-				a.setData(richiestaDTO.getNuovaData());
-				a.setOrario(richiestaDTO.getNuovoOrario());
+				a.setData(r.get().getNuovaData());
+				a.setOrario(r.get().getNuovoOrario());
 				ar.save(a);
+
 			}
 			rr.save(r.get());
-			// TODO INVIO EMAIL
+
+			String recipientEmail = r.get().getAppuntamento().getPrestazione().getMedico().getEmail();
+			String subject = "Notifica richiesta";
+			String message = "Stato richiesta: " + richiestaDTO.getStato();
+
+			emailService.sendEmail(recipientEmail, subject, message);
+
+			recipientEmail = r.get().getAppuntamento().getPaziente().getEmail();
+
+			emailService.sendEmail(recipientEmail, subject, message);
+
 			return new ResponseEntity<>(r.get(), HttpStatus.OK);
 		} catch (NoSuchElementException e) {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
